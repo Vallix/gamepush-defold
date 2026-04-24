@@ -23,9 +23,14 @@ end
 
 ---Выбрать файл
 ---@param callback function функция обратного вызова по результату выбора изображения: callback(result)
-function M.choice_file(callback)
+function M.choose_file(callback)
     helpers.check_callback(callback)
     core.call_api("images.chooseFile", nil, callback)
+end
+
+---@deprecated use choose_file
+function M.choice_file(callback)
+    M.choose_file(callback)
 end
 
 ---Получить изображения

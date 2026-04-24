@@ -1,5 +1,20 @@
 # Change Log
 
+# [v1.3.0](https://github.com/megalanthus/defold-gamepush/releases/tag/v1.3.0) (2026-04-24)
+
+**Added**
+
+- New modules: storage, segments, experiments, feedbacks, reactions, uniques.
+- Social callbacks map and `social_actions` alias for `socials`.
+- `images.choose_file` method with backward-compatible alias `choice_file`.
+- API coverage matrix document.
+
+**Changed**
+
+- Improved callback group resolution for camelCase SDK groups.
+- Hardened web callback initialization for SDK branches without `.on`.
+- Extended mock API with new module handlers and event dispatching.
+
 # [v1.2.1](https://github.com/megalanthus/defold-gamepush/releases/tag/v1.2.1) (2024-08-25)
 
 **Fixed**

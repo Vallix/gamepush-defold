@@ -221,6 +221,54 @@ local M = {
         ["unmute:sfx"] = 0xFD03,
         ["mute:music"] = 0xFD04,
         ["unmute:music"] = 0xFD05
+    },
+    socials = {
+        ["share"] = 0xFE00,
+        ["post"] = 0xFE01,
+        ["invite"] = 0xFE02,
+        ["joinCommunity"] = 0xFE03
+    },
+    storage = {
+        ["set"] = 0xFE10,
+        ["get"] = 0xFE11,
+        ["set:global"] = 0xFE12,
+        ["get:global"] = 0xFE13
+    },
+    segments = {
+        ["enter"] = 0xFE20,
+        ["leave"] = 0xFE21
+    },
+    feedbacks = {
+        ["createFeedback"] = 0xFE30,
+        ["error:createFeedback"] = 0xFE31,
+        ["openFeedbacksList"] = 0xFE32,
+        ["error:openFeedbacksList"] = 0xFE33,
+        ["fetchFeedbacks"] = 0xFE34,
+        ["error:fetchFeedbacks"] = 0xFE35,
+        ["fetchMoreFeedbacks"] = 0xFE36,
+        ["error:fetchMoreFeedbacks"] = 0xFE37,
+        ["sendMessage"] = 0xFE38,
+        ["error:sendMessage"] = 0xFE39,
+        ["event:feedbackMessage"] = 0xFE3A,
+        ["event:feedbackCreated"] = 0xFE3B,
+        ["event:feedbackStatusUpdated"] = 0xFE3C,
+        ["event:feedbackPlatformStatusUpdated"] = 0xFE3D
+    },
+    reactions = {
+        ["set"] = 0xFE40,
+        ["unset"] = 0xFE41,
+        ["set:error"] = 0xFE42,
+        ["unset:error"] = 0xFE43,
+        ["event:set"] = 0xFE44,
+        ["event:unset"] = 0xFE45
+    },
+    uniques = {
+        ["register"] = 0xFE50,
+        ["error:register"] = 0xFE51,
+        ["check"] = 0xFE52,
+        ["error:check"] = 0xFE53,
+        ["delete"] = 0xFE54,
+        ["error:delete"] = 0xFE55
     }
 }
 

@@ -397,6 +397,219 @@ M["socials.isSupportsNativePosts"] = false
 M["socials.isSupportsNativeInvite"] = false
 M["socials.canJoinCommunity"] = false
 M["socials.isSupportsNativeCommunityJoin"] = false
+M["socials.share"] = function()
+    local result = true
+    M.send(callback_ids.socials.share, result)
+    return result
+end
+M["socials.post"] = function()
+    local result = true
+    M.send(callback_ids.socials.post, result)
+    return result
+end
+M["socials.invite"] = function()
+    local result = true
+    M.send(callback_ids.socials.invite, result)
+    return result
+end
+M["socials.joinCommunity"] = function()
+    local result = true
+    M.send(callback_ids.socials.joinCommunity, result)
+    return result
+end
+M["socials.makeShareUrl"] = function(parameters)
+    return string.format("%s#%s", M["app.url"], json.encode(parameters))
+end
+M["socials.getShareParam"] = function()
+    return nil
+end
+
+-- хранилище
+M.storage_data = {}
+M.storage_global_data = {}
+M["storage.type"] = "platform"
+M["storage.setStorage"] = function(storage_type)
+    M["storage.type"] = storage_type
+end
+M["storage.set"] = function(key, value)
+    M.storage_data[key] = value
+    M.send(callback_ids.storage["set"], { key = key, value = value })
+    return true
+end
+M["storage.get"] = function(key)
+    local value = M.storage_data[key]
+    M.send(callback_ids.storage["get"], { key = key, value = value })
+    return value
+end
+M["storage.setGlobal"] = function(key, value)
+    M.storage_global_data[key] = value
+    M.send(callback_ids.storage["set:global"], { key = key, value = value })
+    return true
+end
+M["storage.getGlobal"] = function(key)
+    local value = M.storage_global_data[key]
+    M.send(callback_ids.storage["get:global"], { key = key, value = value })
+    return value
+end
+
+-- сегменты
+M["segments.list"] = {}
+M["segments.has"] = function(tag)
+    for _, segment_tag in pairs(M["segments.list"]) do
+        if segment_tag == tag then
+            return true
+        end
+    end
+    return false
+end
+
+-- эксперименты
+M["experiments.map"] = {}
+M["experiments.has"] = function(tag, cohort)
+    return M["experiments.map"][tag] == cohort
+end
+
+-- фидбеки
+M.feedbacks_data = {}
+M.feedbacks_auto_id = 1
+M["feedbacks.send"] = function(parameters)
+    local feedback = {
+        id = M.feedbacks_auto_id,
+        type = parameters.type or "SUGGESTION",
+        text = parameters.text or "",
+        status = "NEW",
+        messages = {}
+    }
+    M.feedbacks_auto_id = M.feedbacks_auto_id + 1
+    table.insert(M.feedbacks_data, feedback)
+    M.send(callback_ids.feedbacks.createFeedback, feedback)
+    return feedback
+end
+M["feedbacks.open"] = function()
+    M.send(callback_ids.feedbacks.openFeedbacksList)
+    return true
+end
+M["feedbacks.openFeedback"] = function(parameters)
+    for _, feedback in ipairs(M.feedbacks_data) do
+        if tostring(feedback.id) == tostring(parameters.feedbackId) then
+            return feedback
+        end
+    end
+    return nil
+end
+M["feedbacks.fetch"] = function()
+    local result = {
+        items = M.feedbacks_data,
+        canLoadMore = false
+    }
+    M.send(callback_ids.feedbacks.fetchFeedbacks, result)
+    return result
+end
+M["feedbacks.fetchMore"] = function()
+    local result = {
+        items = {},
+        canLoadMore = false
+    }
+    M.send(callback_ids.feedbacks.fetchMoreFeedbacks, result)
+    return result
+end
+M["feedbacks.sendMessage"] = function(parameters)
+    local message = {
+        id = string.format("message-%d", os.time()),
+        text = parameters.text or "",
+        feedbackId = parameters.feedbackId,
+        author = "PLAYER",
+        attachments = parameters.files or {}
+    }
+    for _, feedback in ipairs(M.feedbacks_data) do
+        if tostring(feedback.id) == tostring(parameters.feedbackId) then
+            table.insert(feedback.messages, message)
+            break
+        end
+    end
+    M.send(callback_ids.feedbacks.sendMessage, message)
+    M.send(callback_ids.feedbacks["event:feedbackMessage"], message)
+    return message
+end
+
+-- реакции
+M.reactions_data = {}
+local function reaction_key(parameters)
+    return string.format("%s:%s:%s", parameters.entityType or "", parameters.entityId or "", parameters.reactionType or "")
+end
+M["reactions.set"] = function(parameters)
+    local key = reaction_key(parameters)
+    local counter = (M.reactions_data[key] or 0) + 1
+    M.reactions_data[key] = counter
+    local result = {
+        entityType = parameters.entityType,
+        entityId = parameters.entityId,
+        reactionType = parameters.reactionType,
+        counter = counter
+    }
+    M.send(callback_ids.reactions["set"], result)
+    M.send(callback_ids.reactions["event:set"], result)
+    return result
+end
+M["reactions.unset"] = function(parameters)
+    local key = reaction_key(parameters)
+    local counter = math.max((M.reactions_data[key] or 1) - 1, 0)
+    M.reactions_data[key] = counter
+    local result = {
+        entityType = parameters.entityType,
+        entityId = parameters.entityId,
+        reactionType = parameters.reactionType,
+        counter = counter
+    }
+    M.send(callback_ids.reactions["unset"], result)
+    M.send(callback_ids.reactions["event:unset"], result)
+    return result
+end
+
+-- уникальные значения
+M.uniques_data = {}
+M["uniques.list"] = {}
+M["uniques.get"] = function(tag)
+    return M.uniques_data[tag]
+end
+M["uniques.register"] = function(parameters)
+    local unique = {
+        tag = parameters.tag,
+        value = parameters.value
+    }
+    M.uniques_data[parameters.tag] = parameters.value
+    local list = {}
+    for tag, value in pairs(M.uniques_data) do
+        table.insert(list, { tag = tag, value = value })
+    end
+    M["uniques.list"] = list
+    M.send(callback_ids.uniques.register, unique)
+    return { success = true, value = unique }
+end
+M["uniques.check"] = function(parameters)
+    local result = M.uniques_data[parameters.tag] ~= parameters.value
+    if result then
+        M.send(callback_ids.uniques.check, { tag = parameters.tag, value = parameters.value })
+    else
+        M.send(callback_ids.uniques["error:check"], "already_exists")
+    end
+    return { success = result }
+end
+M["uniques.delete"] = function(parameters)
+    local current_value = M.uniques_data[parameters.tag]
+    M.uniques_data[parameters.tag] = nil
+    local list = {}
+    for tag, value in pairs(M.uniques_data) do
+        table.insert(list, { tag = tag, value = value })
+    end
+    M["uniques.list"] = list
+    local result = {
+        tag = parameters.tag,
+        value = current_value
+    }
+    M.send(callback_ids.uniques.delete, result)
+    return { success = true, value = result }
+end
 
 -- Игровые переменные
 M["variables.fetch"] = function()
@@ -423,10 +636,11 @@ M.games_collections_data = {
     tag = "ALL"
 }
 M["gamesCollections.open"] = function()
-    M.send(callback_ids.payments.fetchProducts, M.games_collections_data)
+    M.send(callback_ids.gamesCollections.open)
+    M.send(callback_ids.gamesCollections.close)
 end
 M["gamesCollections.fetch"] = function()
-    M.send(callback_ids.payments.fetchProducts, M.games_collections_data)
+    M.send(callback_ids.gamesCollections.fetch, M.games_collections_data)
     return M.games_collections_data
 end
 

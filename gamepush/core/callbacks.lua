@@ -221,6 +221,54 @@ local M = {
         unmute_sfx = nil,
         mute_music = nil,
         unmute_music = nil
+    },
+    socials = {
+        share = nil,
+        post = nil,
+        invite = nil,
+        join_community = nil
+    },
+    storage = {
+        set = nil,
+        get = nil,
+        set_global = nil,
+        get_global = nil
+    },
+    segments = {
+        enter = nil,
+        leave = nil
+    },
+    feedbacks = {
+        create_feedback = nil,
+        error_create_feedback = nil,
+        open_feedbacks_list = nil,
+        error_open_feedbacks_list = nil,
+        fetch_feedbacks = nil,
+        error_fetch_feedbacks = nil,
+        fetch_more_feedbacks = nil,
+        error_fetch_more_feedbacks = nil,
+        send_message = nil,
+        error_send_message = nil,
+        event_feedback_message = nil,
+        event_feedback_created = nil,
+        event_feedback_status_updated = nil,
+        event_feedback_platform_status_updated = nil
+    },
+    reactions = {
+        set = nil,
+        unset = nil,
+        set_error = nil,
+        unset_error = nil,
+        event_set = nil,
+        event_unset = nil
+    },
+    uniques = {
+        register = nil,
+        error_register = nil,
+        check = nil,
+        error_check = nil,
+        delete = nil,
+        error_delete = nil
     }
 }
 

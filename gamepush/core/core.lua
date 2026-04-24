@@ -24,11 +24,19 @@ local function get_event_callback_name(callback_id)
 end
 
 local function find_callback(callback_group, callback_name)
-    for group, section_callbacks in pairs(callbacks) do
-        if group == callback_group then
-            return section_callbacks[callback_name]
-        end
+    local function camel_to_snake(value)
+        return string.gsub(value, "%u", function(c)
+            return string.format("_%s", string.lower(c))
+        end)
     end
+    local section_callbacks = callbacks[callback_group]
+    if section_callbacks == nil then
+        section_callbacks = callbacks[camel_to_snake(callback_group)]
+    end
+    if section_callbacks == nil then
+        return
+    end
+    return section_callbacks[callback_name]
 end
 
 local function decode_result(result)
