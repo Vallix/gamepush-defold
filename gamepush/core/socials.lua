@@ -1,6 +1,7 @@
 local M = {}
 local core = require("gamepush.core.core")
 local helpers = require("gamepush.core.helpers")
+local callbacks = require("gamepush.core.callbacks")
 
 ---Поддерживается ли шаринг
 ---@return boolean результат
@@ -79,5 +80,7 @@ function M.get_share_param(parameter)
     helpers.check_string(parameter, "parameter")
     return core.call_api("socials.getShareParam", { parameter })
 end
+
+M.callbacks = callbacks.socials
 
 return M

@@ -14,6 +14,7 @@
 - [Установка](#installation)
 - [Инициализация](#initialize)
 - [API](#api)
+- [Обновление v1.3.0](#update130)
 - [Вызов нативных методов платформы](#native-sdk)
 - [Заглушка для других платформ, отличных от html](#mock)
 - [Заглушка для нативных вызовов](#mock-native)
@@ -99,6 +100,24 @@ gamepush.init(function(success)
     end
 end)
 ```
+
+<a name="update130"></a>
+
+## Обновление v1.3.0
+
+Добавлены новые модули SDK:
+
+- `storage` (`set_storage`, `set`, `get`, `set_global`, `get_global`)
+- `segments` (`list`, `has`)
+- `experiments` (`map`, `has`)
+- `feedbacks` (`send`, `open`, `open_feedback`, `fetch`, `fetch_more`, `send_message`)
+- `reactions` (`set`, `unset`)
+- `uniques` (`list`, `get`, `register`, `check`, `delete`)
+
+Изменения совместимости:
+
+- Добавлены `social_actions` как алиас к `socials`.
+- `images.choose_file(callback)` добавлен как корректное имя метода, `images.choice_file(callback)` оставлен как deprecated-алиас.
 
 <a name="api"></a>
 
@@ -261,8 +280,8 @@ end)
 | `gp.channels.on('error:fetchMoreChannels', (error) => {})`                                                          | `channels.callbacks.error_fetch_more_channel(error)`<br> Ошибка подгрузки списка каналов                                                                                                                                                                                      |
 | **Готовые чаты** [(doc)](https://docs.gamepush.com/docs/channels/ready-chats)                                       |                                                                                                                                                                                                                                                                               |
 | `gp.channels.openChat(parameters)`                                                                                  | `channels.open_chat(parameters)`<br> Вызов окна чата<br> parameters: таблица параметров                                                                                                                                                                                       |
-| `gp.channels.isMainChatEnabled`                                                                                     | `payments.is_main_chat_enabled()`<br> Проверка возможности показать главный чат                                                                                                                                                                                               |
-| `gp.channels.mainChatId`                                                                                            | `payments.main_chat_id()`<br> Получить ID главного чата                                                                                                                                                                                                                       |
+| `gp.channels.isMainChatEnabled`                                                                                     | `channels.is_main_chat_enabled()`<br> Проверка возможности показать главный чат                                                                                                                                                                                               |
+| `gp.channels.mainChatId`                                                                                            | `channels.main_chat_id()`<br> Получить ID главного чата                                                                                                                                                                                                                       |
 | События:                                                                                                            |                                                                                                                                                                                                                                                                               |
 | `gp.channels.on('openChat', () => {})`                                                                              | `channels.callbacks.open_chat()`<br> Открыли чат                                                                                                                                                                                                                              |
 | `gp.channels.on('closeChat', () => {})`                                                                             | `channels.callbacks.close_chat()`<br> Закрыли чат                                                                                                                                                                                                                             |
@@ -528,7 +547,7 @@ end)
 | **Изображения** [(doc)](https://docs.gamepush.com/docs/images)                                                      |                                                                                                                                                                                                                                                                               |
 | `gp.images.upload(parameters)`                                                                                      | `images.upload(parameters, callback)`<br> Загрузить изображение<br> parameters: таблица с параметрами<br> callback(image): функция обратного вызова или nil                                                                                                                   |
 | `gp.images.uploadUrl(parameters)`                                                                                   | `images.upload_url(parameters, callback)`<br> Загрузить изображение по URL<br> parameters: таблица с параметрами<br> callback(image): функция обратного вызова или nil                                                                                                        |
-| `gp.images.chooseFile()`                                                                                            | `images.choice_file(callback)`<br> Выбрать файл<br> callback(image): функция обратного вызова или nil                                                                                                                                                                         |
+| `gp.images.chooseFile()`                                                                                            | `images.choose_file(callback)`<br> Выбрать файл<br> callback(image): функция обратного вызова или nil                                                                                                                                                                         |
 | `gp.images.fetch(parameters)`                                                                                       | `images.fetch(parameters, callback)`<br> Получить изображения<<br> parameters: таблица с параметрами<br> callback(image): функция обратного вызова или nil                                                                                                                    |
 | `gp.images.fetchMore(parameters)`                                                                                   | `images.fetch_more(parameters, callback)`<br> Получить еще изображений<<br> parameters: таблица с параметрами<br> callback(image): функция обратного вызова или nil                                                                                                           |
 | `gp.images.resize(url, width, height, crop)`                                                                        | `images.resize(uri, width, height, crop)`<br> Изменить размер изображения<<br> uri: адрес изображения<br> width: требуемая ширина изображения<br> height: требуемая высота изображения<br> crop: обрезка изображения<br> Функция возвращает ссылку на обрезанное изображение. |

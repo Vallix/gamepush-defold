@@ -9,6 +9,9 @@ let LibraryGamePush = {
         init_callbacks: function (gp, callback_ids) {
             for (let callback_group in callback_ids) {
                 let base_object = callback_group === "common" ? gp : gp[callback_group];
+                if (!base_object || typeof base_object.on !== "function") {
+                    continue;
+                }
                 let group_callback_ids = callback_ids[callback_group];
                 for (let event_name in group_callback_ids) {
                     base_object.on(event_name, (result) => GamePushLib.send(group_callback_ids[event_name], result));

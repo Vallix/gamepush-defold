@@ -28,6 +28,12 @@ local buttons = {
     { name = "Triggers", callback = switch_section, section = require("example.triggers") },
     { name = "Achievements", callback = switch_section, section = require("example.achievements") },
     { name = "Socials", callback = switch_section, section = require("example.socials") },
+    { name = "Storage", callback = switch_section, section = require("example.storage") },
+    { name = "Segments", callback = switch_section, section = require("example.segments") },
+    { name = "Experiments", callback = switch_section, section = require("example.experiments") },
+    { name = "Feedbacks", callback = switch_section, section = require("example.feedbacks") },
+    { name = "Reactions", callback = switch_section, section = require("example.reactions") },
+    { name = "Uniques", callback = switch_section, section = require("example.uniques") },
     { name = "Variables", callback = switch_section, section = require("example.variables") },
     { name = "Games collections", callback = switch_section, section = require("example.games_collections") },
     { name = "Images", callback = switch_section, section = require("example.images") },
@@ -35,6 +41,7 @@ local buttons = {
     { name = "Documents", callback = switch_section, section = require("example.documents") },
     { name = "Analytics", callback = switch_section, section = require("example.analytics") },
     { name = "Fullscreen", callback = switch_section, section = require("example.fullscreen") },
+    { name = "Sounds", callback = switch_section, section = require("example.sounds") },
     { name = "Native platform", callback = switch_section, section = require("example.native_platform") },
     { name = "Logger", callback = switch_section, section = require("example.logger") },
 }
@@ -48,6 +55,9 @@ function init(self)
     mock_api["player.score"] = 500
     mock_api["player.name"] = "player name"
     mock_api["player.avatar"] = "avatar"
+    mock_api["segments.list"] = { "VIP", "NEWBLE" }
+    mock_api["experiments.map"] = { EASY_LEVEL = "easy", OFFER_ON_START = "sale_50" }
+    mock_api["app.url"] = "https://gamepush.com"
 
     utils.to_console(gamepush.get_plugin_version())
     msg.post(".", "acquire_input_focus")
